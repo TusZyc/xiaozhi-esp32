@@ -66,6 +66,10 @@ void Application::Initialize() {
     auto display = board.GetDisplay();
     display->SetupUI();
     // Print board name/version info
+    ESP_LOGW(TAG, "======================================");
+    ESP_LOGW(TAG, "  TusZyc Custom Build - %s", SystemInfo::GetUserAgent().c_str());
+    ESP_LOGW(TAG, "  GitHub: github.com/TusZyc/xiaozhi-esp32");
+    ESP_LOGW(TAG, "======================================");
     display->SetChatMessage("system", SystemInfo::GetUserAgent().c_str());
 
     // Setup the audio service
