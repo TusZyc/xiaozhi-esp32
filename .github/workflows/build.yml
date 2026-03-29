@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: espressif/idf:v5.5
+      image: espressif/idf:v5.5.2
 
     steps:
       - name: Fix git ownership
@@ -28,36 +28,21 @@ jobs:
         uses: actions/cache@v4
         if: ${{ !inputs.clean_build }}
         with:
-          path: |
-            ~/.cache/pip
-            managed_components
+          path: managed_components
           key: idf-components-esp32s3-${{ hashFiles('main/idf_component.yml') }}
           restore-keys: |
             idf-components-esp32s3-
 
-      - name: Configure board (ATK-DNESP32S3-BOX)
-        run: |
-          echo "" >> sdkconfig.defaults
-          echo "# === Board: ATK-DNESP32S3-BOX ===" >> sdkconfig.defaults
-          echo "CONFIG_BOARD_TYPE_ATK_DNESP32S3_BOX=y" >> sdkconfig.defaults
-          echo "CONFIG_USE_WECHAT_MESSAGE_STYLE=y" >> sdkconfig.defaults
-
       - name: Build firmware
+        shell: bash
         run: |
-          . $IDF_PATH/export.sh
-          idf.py set-target esp32s3
-          idf.py build
-
-      - name: Merge binary for one-click flashing
-        run: |
-          . $IDF_PATH/export.sh
-          idf.py merge-bin
-          mkdir -p output
-          cp build/merged-binary.bin output/xiaozhi-atk-dnesp32s3-box.bin
+          source $IDF_PATH/export.sh
+          python scripts/release.py atk-dnesp32s3-box --name atk-dnesp32s3-box
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
           name: xiaozhi-atk-dnesp32s3-box-firmware
-          path: output/xiaozhi-atk-dnesp32s3-box.bin
+          path: build/merged-binary.bin
+          if-no-files-found: error
           retention-days: 30
