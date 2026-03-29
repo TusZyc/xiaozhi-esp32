@@ -121,6 +121,18 @@ void McpServer::AddCommonTools() {
     }
 #endif
 
+    // ===== 自定义工具：TusZyc 专属问候 =====
+    // 这是一个简单的测试工具，验证云编译流程是否正常
+    AddTool("self.tus_greeting",
+        "图斯的专属问候工具。当用户说'你好'、'打招呼'、'介绍一下自己'时使用此工具。"
+        "返回一个友好的问候语，包含设备信息。",
+        PropertyList(),
+        [](const PropertyList& properties) -> ReturnValue {
+            return "你好！我是图斯的专属AI助手，基于小智AI固件定制开发。"
+                   "当前设备：正点原子DNESP32S3-BOX。"
+                   "云编译测试成功！如果你听到这段话，说明自定义功能已经正常工作了。";
+        });
+
     // Restore the original tools list to the end of the tools list
     tools_.insert(tools_.end(), original_tools.begin(), original_tools.end());
 }
